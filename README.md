@@ -271,7 +271,7 @@ The Use Case Diagram identifies the major actors and the functionalities they pe
 - ICONS Department
 - User / Booker
 
-![Use Case Diagram](uml/use-case-diagram.png)
+![Use Case Diagram](UML%20Diagram%20Files/UsecaseDiagram.drawio.png)
 
 ---
 
@@ -279,7 +279,7 @@ The Use Case Diagram identifies the major actors and the functionalities they pe
 
 The Class Diagram represents the major classes, attributes, methods, and relationships of the system.
 
-![Class Diagram](uml/class-diagram.png)
+![Class Diagram](UML%20Diagram%20Files/Cultural%20Venue%20Booking%20UML%20Class%20Diagram.png)
 
 ---
 
@@ -287,7 +287,7 @@ The Class Diagram represents the major classes, attributes, methods, and relatio
 
 The Sequence Diagram illustrates the interaction between the user and system components during a major operation, such as submitting a venue and equipment booking request.
 
-![Sequence Diagram](uml/sequence-diagram.png)
+![Sequence Diagram](UML%20Diagram%20Files/sequencDiagram.drawio.png)
 
 ---
 
@@ -295,4 +295,4 @@ The Sequence Diagram illustrates the interaction between the user and system com
 
 The Activity Diagram illustrates the workflow of the booking process, including availability checking, booking submission, approval or rejection, and equipment allocation.
 
-![Activity Diagram](uml/activity-diagram.png)
+![Activity Diagram](UML%20Diagram%20Files/Cultural%20Venue%20Booking%20Activity%20Diagram.png)
