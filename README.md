@@ -287,7 +287,7 @@ The Class Diagram represents the major classes, attributes, methods, and relatio
 
 The Sequence Diagram illustrates the interaction between the user and system components during a major operation, such as submitting a venue and equipment booking request.
 
-![Sequence Diagram](UML%20Diagram%20Files/sequencDiagram.drawio.png)
+![Sequence Diagram](UML%20Diagram%20Files/sequenceDiagram.drawio.png)
 
 ---
 
