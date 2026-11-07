@@ -152,6 +152,8 @@ cultural-venue-booking-system/
 │   ├── manage.py
 │   ├── project/
 │   ├── accounts/
+│   │   ├── templates/accounts/
+│   │   └── static/accounts/
 │   ├── venues/
 │   ├── bookings/
 │   └── equipment/
@@ -225,19 +227,20 @@ Open MySQL or MySQL Workbench and create the project database.
 CREATE DATABASE cultural_booking_db;
 ```
 
-Configure the database connection in the Django project's settings.
+The development project uses SQLite by default. Configure `DATABASES` in
+`src/project/settings.py` when connecting to MySQL.
 
 ### Step 5: Run Django Migrations
 
 ```bash
-python manage.py makemigrations
-python manage.py migrate
+python src/manage.py makemigrations
+python src/manage.py migrate
 ```
 
 ### Step 6: Create an Administrator Account
 
 ```bash
-python manage.py createsuperuser
+python src/manage.py createsuperuser
 ```
 
 Follow the instructions to create the administrator account.
@@ -245,13 +248,13 @@ Follow the instructions to create the administrator account.
 ### Step 7: Run the Development Server
 
 ```bash
-python manage.py runserver
+python src/manage.py runserver
 ```
 
 Open the application in a browser:
 
 ```text
-http://127.0.0.1:8000/
+http://127.0.0.1:8000/accounts/login/
 ```
 
 ---
