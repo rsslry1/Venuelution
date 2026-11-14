@@ -1,0 +1,132 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Accounts | Venuelution</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'accounts/dashboard.css' %}" />
+    <link rel="stylesheet" href="{% static 'accounts/app.css' %}" />
+  </head>
+  <body>
+    <main class="main-content utility-page">
+      <header class="topbar">
+        <div class="breadcrumb">
+          <a href="{% url 'accounts:dashboard' %}">Administrator</a
+          ><b>/</b> Accounts
+        </div>
+      </header>
+      <section class="welcome">
+        <div>
+          <p class="section-kicker">Administration</p>
+          <h1>Account management</h1>
+          <p>
+            Activate resident registrations and provision department accounts.
+          </p>
+        </div>
+      </section>
+      {% for message in messages %}
+      <p class="message">{{ message }}</p>
+      {% endfor %}
+      <section class="panel activity-panel glass-form">
+        <h2>Create an account</h2>
+        <form method="post">
+          {% csrf_token %}<input type="hidden" name="action" value="create" />{{
+          form.as_p }}<button class="primary-button" type="submit">
+            Create account
+          </button>
+        </form>
+      </section>
+      <section class="panel activity-panel glass-table">
+        <h2>All accounts</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Account</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Joined</th>
+              <th>Manage</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+            <tr>
+              <td>
+                <strong>{{ user.username }}</strong><br /><small
+                  >{{ user.email }}</small
+                >
+              </td>
+              <td>
+                {% if user.is_superuser %}<span class="status review"
+                  >Administrator</span
+                >{% else %}
+                <form
+                  class="inline-form"
+                  method="post"
+                  action="{% url 'accounts:update_account' user.pk %}"
+                >
+                  {% csrf_token %}<input
+                    type="hidden"
+                    name="action"
+                    value="role"
+                  />
+                  <select name="role">
+                    {% for value, label in roles.choices %}
+                    {% if value != 'administrator' %}
+                    <option value="{{ value }}" {% if user.account_profile.role == value %}selected{% endif %}>
+                      {{ label }}
+                    </option>
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                  <button type="submit">Save</button>
+                </form>
+                {% endif %}
+              </td>
+              <td>
+                <span class="status {% if user.is_active %}new{% else %}urgent{% endif %}">
+                  {% if user.is_active %}Active{% else %}Awaiting activation{% endif %}
+                </span>
+              </td>
+              <td>{{ user.date_joined|date:"d M Y" }}</td>
+              <td>
+                {% if not user.is_superuser %}
+                <form
+                  class="inline-form"
+                  method="post"
+                  action="{% url 'accounts:update_account' user.pk %}"
+                >
+                  {% csrf_token %}{% if user.is_active %}<button
+                    name="action"
+                    value="deactivate"
+                    type="submit"
+                  >
+                    Deactivate</button
+                  >{% else %}<button
+                    name="action"
+                    value="activate"
+                    type="submit"
+                  >
+                    Activate</button
+                  >{% endif %}
+                </form>
+                {% endif %}
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="5">No accounts found.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </body>
+</html>

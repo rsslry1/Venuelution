@@ -1,27 +1,232 @@
-{% load static %}
-<!doctype html>
+{% load static %} <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome | Venuelution</title>
-    <link rel="stylesheet" href="{% static 'accounts/login.css' %}">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ dashboard_title }} | Venuelution</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'accounts/dashboard.css' %}" />
   </head>
   <body>
-    <main class="auth-shell" aria-label="Venuelution account">
-      <div class="backdrop" aria-hidden="true"></div>
-      <div class="backdrop-shade" aria-hidden="true"></div>
-      <section class="auth-window">
-        <div class="glass-card dashboard-card">
-          <p class="eyebrow"><span></span> Your community, together</p>
-          <h1>Welcome,<br>{{ request.user.first_name|default:request.user.username }}.</h1>
-          <p class="intro">You’re signed in and ready to plan your next gathering.</p>
+    <div class="dashboard-shell">
+      <aside class="sidebar" aria-label="Main navigation">
+        <a class="brand" href="{% url 'accounts:dashboard' %}"
+          ><svg class="brand-mark" viewBox="0 0 32 32">
+            <path
+              d="M5 26V11l11-7 11 7v15M9 26V14h14v12M13 26v-7h6v7"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            /></svg
+          ><span>venue<span>lution</span></span></a
+        >
+        <p class="nav-label">Workspace</p>
+        <nav class="navigation">
+          <a class="nav-item active" href="#overview"
+            ><span class="nav-icon">⌂</span>Overview</a
+          >{% if role_key == 'resident' %}<a
+            class="nav-item"
+            href="{% url 'bookings:my_bookings' %}"
+            ><span class="nav-icon">□</span>{{ primary_nav }}</a
+          ><a class="nav-item" href="{% url 'venues:availability' %}"
+            ><span class="nav-icon">▦</span>{{ secondary_nav }}</a
+          >{% elif role_key == 'venue' %}<a
+            class="nav-item"
+            href="{% url 'bookings:venue_queue' %}"
+            ><span class="nav-icon">□</span>{{ primary_nav }}</a
+          >{% elif role_key == 'equipment' %}<a
+            class="nav-item"
+            href="{% url 'bookings:equipment_queue' %}"
+            ><span class="nav-icon">□</span>{{ primary_nav }}</a
+          ><a class="nav-item" href="{% url 'equipment:availability' %}"
+            ><span class="nav-icon">▦</span>{{ secondary_nav }}</a
+          >{% else %}<a
+            class="nav-item"
+            href="{% url 'accounts:manage_accounts' %}"
+            ><span class="nav-icon">○</span>Accounts</a
+          ><a class="nav-item" href="{% url 'bookings:reports' %}"
+            ><span class="nav-icon">□</span>Reports</a
+          ><a class="nav-item" href="{% url 'bookings:cancellation_queue' %}"
+            ><span class="nav-icon">▦</span>Cancellation requests</a
+          >{% endif %}<a class="nav-item" href="{% url 'bookings:calendar' %}"
+            ><span class="nav-icon">◫</span>Calendar</a
+          >
+        </nav>
+        <div class="sidebar-bottom">
+          <a class="nav-item" href="#help"
+            ><span class="nav-icon">?</span>Help center</a
+          >
           <form method="post" action="{% url 'accounts:logout' %}">
-            {% csrf_token %}
-            <button class="submit-button" type="submit">Sign out <span aria-hidden="true">→</span></button>
+            {% csrf_token %}<button class="nav-item signout" type="submit">
+              <span class="nav-icon">↗</span>Sign out
+            </button>
           </form>
+          <div class="profile">
+            <span class="avatar"
+              >{{
+              request.user.first_name|default:request.user.username|slice:':1'|upper
+              }}</span
+            ><span
+              ><strong
+                >{{ request.user.get_full_name|default:request.user.username
+                }}</strong
+              ><small>{{ role_name }}</small></span
+            >
+          </div>
         </div>
-      </section>
-    </main>
+      </aside>
+      <main class="main-content" id="overview">
+        <header class="topbar">
+          <button class="menu-button" type="button">☰</button>
+          <div class="breadcrumb">
+            <span>{{ role_name }}</span><b>/</b> Overview
+          </div>
+          <div class="top-actions">
+            <a
+              class="icon-button"
+              href="{% url 'notifications:inbox' %}"
+              aria-label="Notifications"
+              >◌<i></i></a
+            ><span class="date">{{ today_label }}</span>
+          </div>
+        </header>
+        <section class="welcome">
+          <div>
+            <p class="section-kicker">{{ role_name }} workspace</p>
+            <h1>
+              {{ greeting }}, {{
+              request.user.first_name|default:request.user.username }}.
+            </h1>
+            <p>{{ subheading }}</p>
+          </div>
+          {% if role_key == 'resident' %}<a
+            class="primary-button"
+            href="{% url 'bookings:create' %}"
+            ><span>+</span>{{ action_label }}</a
+          >{% elif role_key == 'venue' %}<a
+            class="primary-button"
+            href="{% url 'bookings:venue_queue' %}"
+            ><span>+</span>{{ action_label }}</a
+          >{% elif role_key == 'equipment' %}<a
+            class="primary-button"
+            href="{% url 'bookings:equipment_queue' %}"
+            ><span>+</span>{{ action_label }}</a
+          >{% else %}<a
+            class="primary-button"
+            href="{% url 'bookings:cancellation_queue' %}"
+            ><span>+</span>{{ action_label }}</a
+          >{% endif %}
+        </section>
+        <section class="metrics">
+          {% for metric in metrics %}
+          <article
+            class="metric-card {% if forloop.first %}highlight{% endif %}"
+          >
+            <div class="metric-top">
+              <span>{{ metric.label }}</span
+              ><span
+                class="trend {% if metric.trend == 'Needs attention' %}attention{% endif %}"
+                >{{ metric.trend }}</span
+              >
+            </div>
+            <strong>{{ metric.value }}</strong>
+            <p>{{ metric.detail }}</p>
+          </article>
+          {% endfor %}
+        </section>
+        <section class="dashboard-grid">
+          <article class="panel priority-panel" id="requests">
+            <div class="panel-heading">
+              <div>
+                <p class="section-kicker">Priority</p>
+                <h2>{{ queue_title }}</h2>
+              </div>
+              <a href="#all">View all <span>→</span></a>
+            </div>
+            <div class="request-list">
+              {% for request in requests %}
+              <div class="request-row">
+                <div class="date-block">
+                  <strong>{{ request.day }}</strong
+                  ><span>{{ request.month }}</span>
+                </div>
+                <div class="request-detail">
+                  <strong>{{ request.title }}</strong
+                  ><span>{{ request.meta }}</span>
+                </div>
+                <span class="status {{ request.status_class }}"
+                  >{{ request.status }}</span
+                ><button class="more" type="button">•••</button>
+              </div>
+              {% endfor %}
+            </div>
+          </article>
+          <aside class="panel calendar-panel" id="calendar">
+            <div class="panel-heading">
+              <div>
+                <p class="section-kicker">Schedule</p>
+                <h2>Today</h2>
+              </div>
+              <a href="{% url 'bookings:calendar' %}"
+                >Calendar <span>→</span></a
+              >
+            </div>
+            <div class="today-date">
+              <strong>{{ today_day }}</strong>
+              <div>
+                <span>{{ today_weekday }}</span><b>{{ today_month_year }}</b>
+              </div>
+            </div>
+            <div class="schedule-list">
+              {% for event in schedule %}
+              <div class="schedule-item">
+                <time>{{ event.time }}</time
+                ><span class="event-dot {{ event.dot }}"></span>
+                <div>
+                  <strong>{{ event.title }}</strong
+                  ><small>{{ event.place }}</small>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </aside>
+        </section>
+        <section class="panel activity-panel" id="inventory">
+          <div class="panel-heading">
+            <div>
+              <p class="section-kicker">At a glance</p>
+              <h2>{{ activity_title }}</h2>
+            </div>
+            <a href="#report">Open report <span>→</span></a>
+          </div>
+          <div class="activity-content">
+            <div class="bar-chart">
+              <div class="chart-axis">
+                <span>24</span><span>16</span><span>8</span><span>0</span>
+              </div>
+              <div class="bars">
+                {% for bar in chart %}
+                <div class="bar-wrap">
+                  <i style="height: {{ bar }}%"></i
+                  ><span>{{ forloop.counter0|add:8 }}</span>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+            <div class="insight">
+              <span class="insight-icon">✦</span>
+              <p>{{ insight }}</p>
+              <a href="#details">See details →</a>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="{% static 'accounts/dashboard.js' %}"></script>
   </body>
 </html>

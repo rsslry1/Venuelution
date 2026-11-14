@@ -12,9 +12,14 @@ document.querySelectorAll("[data-switch]").forEach((button) => {
 
 document.querySelectorAll(".password-toggle").forEach((button) => {
   button.addEventListener("click", () => {
-    const password = document.getElementById(button.getAttribute("aria-controls"));
+    const password = document.getElementById(
+      button.getAttribute("aria-controls"),
+    );
     const showPassword = password.type === "password";
     password.type = showPassword ? "text" : "password";
-    button.setAttribute("aria-label", showPassword ? "Hide password" : "Show password");
+    button.setAttribute(
+      "aria-label",
+      showPassword ? "Hide password" : "Show password",
+    );
   });
 });
